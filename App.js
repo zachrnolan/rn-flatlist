@@ -1,10 +1,19 @@
 import React from 'react'
 import { StyleSheet, Text, FlatList, View } from 'react-native'
-import _ from 'lodash'
-
-const large_array = _.range(200).map((x, i) => ({id: i, title: 'List Item ' + i}))
+import { get_data } from './src/utils/data'
 
 export default class App extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: null
+    }
+  }
+
+  componentWillMount() {
+    this.setState({data: get_data(10, 0)})
+  }
 
   _renderItem({item}) {
     return (
@@ -14,14 +23,22 @@ export default class App extends React.Component {
     )
   }
 
+  onEndReached() {
+    console.log('onEndReached()')
+    // let data = this.state.data
+    // let newData = data.concat(get_data(10, data.length))
+    // this.setState({data: newData})
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>FlatList (Vertical)</Text>
         <FlatList
-          data={large_array}
+          data={this.state.data}
           keyExtractor={item => item.id}
-          renderItem={this._renderItem} />
+          renderItem={this._renderItem}
+          onEndReached={this.onEndReached} />
       </View>
     )
   }
