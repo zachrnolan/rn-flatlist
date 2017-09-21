@@ -1,5 +1,9 @@
 import _ from 'lodash'
 
 export const get_data = (num, skip) => {
-  return _.range(skip, skip + num).map((x, i) => ({id: i, title: 'List Item ' + i}))
+  const start = skip
+  const end = skip + num
+  console.log('start: ', start)
+  console.log('end: ', end)
+  return _.range(start, end).map((x, i) => ({id: i, title: 'List Item ' + i}))
 }

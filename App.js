@@ -2,6 +2,8 @@ import React from 'react'
 import { StyleSheet, Text, FlatList, View } from 'react-native'
 import { get_data } from './src/utils/data'
 
+const NUM_DATA = 20
+
 export default class App extends React.Component {
 
   constructor(props) {
@@ -12,7 +14,7 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({data: get_data(10, 0)})
+    this.setState({data: get_data(NUM_DATA, 0)})
   }
 
   _renderItem({item}) {
@@ -23,11 +25,14 @@ export default class App extends React.Component {
     )
   }
 
-  onEndReached() {
-    console.log('onEndReached()')
-    // let data = this.state.data
-    // let newData = data.concat(get_data(10, data.length))
-    // this.setState({data: newData})
+  onEndReached = () => {
+    if (!this.onEndReachedCalledDuringMomentum) {
+      console.log('onEndReached()', this.state.data)
+      let data = this.state.data
+      let newData = data.concat(get_data(NUM_DATA, data.length + 1))
+      this.setState({data: newData})
+      this.onEndReachedCalledDuringMomentum = true;
+    }
   }
 
   render() {
@@ -36,9 +41,11 @@ export default class App extends React.Component {
         <Text style={styles.title}>FlatList (Vertical)</Text>
         <FlatList
           data={this.state.data}
-          keyExtractor={item => item.id}
+          keyExtractor={(item, index) => index}
           renderItem={this._renderItem}
-          onEndReached={this.onEndReached} />
+          onEndReached={this.onEndReached}
+          onEndReachedThreshold={0.5}
+          onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false }} />
       </View>
     )
   }
